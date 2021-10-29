@@ -27,47 +27,48 @@ Terminal::Terminal()
 {
 	input = stdin;
 	output = stdout;
-	input_fd = fileno(input);
+	// input_fd = fileno(input);
 
 	// Set input and output to be unbuffered
-	setbuf(input, (char *)0);
-	setbuf(output, (char *)0);
+	// setbuf(input, (char *)0);
+	// setbuf(output, (char *)0);
 
 	// Get copies of current terminal attributes
-	tcgetattr(input_fd, &oattr);
-	tcgetattr(input_fd, &nattr);
+	// tcgetattr(input_fd, &oattr);
+	// tcgetattr(input_fd, &nattr);
 
-	nattr.c_lflag &= ~ICANON;
-	nattr.c_lflag &= ~ISIG;
+	// nattr.c_lflag &= ~ICANON;
+	// nattr.c_lflag &= ~ISIG;
 
-	nattr.c_lflag &= ~ECHO;
-	nattr.c_lflag |= ECHOE;
+	// nattr.c_lflag &= ~ECHO;
+	// nattr.c_lflag |= ECHOE;
 
-	nattr.c_iflag &= ~ICRNL;
-	nattr.c_oflag &= ~ONLCR;
+	// nattr.c_iflag &= ~ICRNL;
+	// nattr.c_oflag &= ~ONLCR;
 
-	tcsetattr(input_fd, TCSANOW, &nattr);
+	// tcsetattr(input_fd, TCSANOW, &nattr);
 }
 
 Terminal::~Terminal()
 {
-	tcsetattr(input_fd, TCSANOW, &oattr);
+	// tcsetattr(input_fd, TCSANOW, &oattr);
 }
 
 int Terminal::poll()
 {
-	fd_set			fds;
+	// fd_set			fds;
 
-	// Uses minimal (10us) delay in select(2) call to
-	// ensure that idling simulations don't chew
-	// up masses of CPU time
-	static struct timeval	tv = { 0L, 10L };
+	// // Uses minimal (10us) delay in select(2) call to
+	// // ensure that idling simulations don't chew
+	// // up masses of CPU time
+	// static struct timeval	tv = { 0L, 10L };
 
-	FD_ZERO(&fds);
-	FD_SET(input_fd, &fds);
-	(void)select(FD_SETSIZE, &fds, NULL, NULL, &tv);
+	// FD_ZERO(&fds);
+	// FD_SET(input_fd, &fds);
+	// (void)select(FD_SETSIZE, &fds, NULL, NULL, &tv);
 
-	return FD_ISSET(input_fd, &fds);
+	// return FD_ISSET(input_fd, &fds);
+	return 0;
 }
 
 Byte Terminal::read()

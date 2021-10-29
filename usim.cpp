@@ -8,6 +8,7 @@
 
 #include <cstdlib>
 #include <cstdio>
+#include <csignal>
 #include "usim.h"
 
 //----------------------------------------------------------------------------
@@ -89,7 +90,13 @@ Byte USim::read(Word offset)
 {
 	++cycles;
 	for (auto& d : dev_mapped) {
+		if ( false ) {
+			printf("read() -> offset = %4.4x mask = %4.4x base = %4.4x\n", offset, d.mask, d.base);
+		}
 		if ((offset & d.mask) == d.base) {
+			if ( false ) {
+				printf(" ok (%2.2x at %4.4x)!\n", d.device->read(offset - d.base), offset - d.base );
+			}
 			return d.device->read(offset - d.base);
 		}
 	}
@@ -101,7 +108,15 @@ void USim::write(Word offset, Byte val)
 {
 	++cycles;
 	for (auto& d : dev_mapped) {
+		if ( offset == 0x5022 ) {
+			printf("write(%2.2x) -> offset = %4.4x mask = %4.4x base = %4.4x\n", val, offset, d.mask, d.base);
+		}
 		if ((offset & d.mask) == d.base) {
+			if ( offset == 0x5022 ) {
+				printf(" ok at %4.4x!\n", offset - d.base);
+				// std::raise(SIGINT);
+				throw "Exception";
+			}
 			d.device->write(offset - d.base, val);
 			break;
 		}

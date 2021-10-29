@@ -32,6 +32,9 @@ public:
 						memory[offset] = val;
 					}
 				};
+
+	void		load_intelhex(const char *filename, Word base);
+	void		load_binary(const char *filename, Word base);
 };
 
 /*
@@ -58,8 +61,7 @@ public:
 					(void)val;
 				}
 
-public:
-		void		load_intelhex(const char *filename, Word base);
+
 
 };
 

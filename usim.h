@@ -22,13 +22,16 @@ class USim {
 protected:
 
 		bool		m_trace = false;
+		char **		m_listing = NULL;
 		bool		halted = true;
 		uint8_t		cycles = 0;
+		bool		trace = false;
 
 // Generic internal registers that we assume all CPUs have
 
 		Word		ir;
 		Word		pc;
+		Word		trap;
 
 // Generic read/write/execute functions
 protected:
@@ -55,6 +58,10 @@ public:
 					attach(dev, base, mask, rank<2>{});
 				};
 
+	void enableTrace() {
+		trace = true;
+	}
+
 // Functions to start and stop the virtual processor
 public:
 
@@ -66,7 +73,7 @@ public:
 	virtual void		reset();
 
 // Debugging
-		void		tron() { m_trace = true; };
+		void		tron(char *_listing[]) { m_trace = true; m_listing = _listing; };
 		void		troff() { m_trace = false; };
 
 };

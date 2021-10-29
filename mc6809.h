@@ -30,7 +30,7 @@ protected: // Processor addressing modes
 				relative
 	} mode;
 
-protected:	// Processor registers
+public:	// Processor registers
 
 	Word			u, s;		// Stack pointers
 	Word			x, y;		// Index registers
@@ -218,7 +218,7 @@ public:
 				mc6809();		// public constructor
 	virtual			~mc6809();		// public destructor
 
-	virtual void		reset();		// CPU reset
+	virtual void		reset(Word _pc, Word _trap);		// CPU reset
 	virtual void		tick();
 };
 
