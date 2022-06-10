@@ -16,12 +16,12 @@ inline bool btst(Byte x, int n)
 	return (x & (1 << n)) ? true : false;
 }
 
-inline void bset(Byte& x, int n)
+inline void bset(Byte &x, int n)
 {
 	x |= (1 << n);
 }
 
-inline void bclr(Byte& x, int n)
+inline void bclr(Byte &x, int n)
 {
 	x &= ~(1 << n);
 }
@@ -32,12 +32,12 @@ inline bool btst(Word x, int n)
 	return (x & (1 << n)) ? true : false;
 }
 
-inline void bset(Word& x, int n)
+inline void bset(Word &x, int n)
 {
 	x |= (1 << n);
 }
 
-inline void bclr(Word& x, int n)
+inline void bclr(Word &x, int n)
 {
 	x &= ~(1 << n);
 }
@@ -48,12 +48,12 @@ inline bool btst(DWord x, int n)
 	return (x & (1L << n)) ? true : false;
 }
 
-inline void bset(DWord& x, int n)
+inline void bset(DWord &x, int n)
 {
 	x |= (1L << n);
 }
 
-inline void bclr(DWord& x, int n)
+inline void bclr(DWord &x, int n)
 {
 	x &= ~(1L << n);
 }
@@ -61,18 +61,24 @@ inline void bclr(DWord& x, int n)
 // Bit extend operations
 inline Word extend5(Byte x)
 {
-	if (x & 0x10) {
+	if (x & 0x10)
+	{
 		return (Word)x | 0xffe0;
-	} else {
+	}
+	else
+	{
 		return (Word)x;
 	}
 }
 
 inline Word extend8(Byte x)
 {
-	if (x & 0x80) {
+	if (x & 0x80)
+	{
 		return (Word)x | 0xff00;
-	} else {
+	}
+	else
+	{
 		return (Word)x;
 	}
 }

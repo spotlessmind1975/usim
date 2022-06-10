@@ -14,23 +14,22 @@
 #include <termios.h>
 #endif
 
-class Terminal {
+class Terminal
+{
 
 #ifdef _POSIX_SOURCE
-	FILE			*input, *output;
-	int			 input_fd;
-	struct termios		 oattr, nattr;
+	FILE *input, *output;
+	int input_fd;
+	struct termios oattr, nattr;
 #endif // _POSIX_SOURCE
 
 public:
+	int poll();
+	void write(Byte);
+	Byte read();
 
-	int			 poll();
-	void			 write(Byte);
-	Byte			 read();
+	// Public constructor and destructor
 
-// Public constructor and destructor
-
-				 Terminal();
-				~Terminal();
-
+	Terminal();
+	~Terminal();
 };

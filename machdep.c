@@ -15,22 +15,29 @@
 
 void byte_order(FILE *f)
 {
-	union {
-		struct {
-			uint8_t	field1;
-			uint8_t	field2;
+	union
+	{
+		struct
+		{
+			uint8_t field1;
+			uint8_t field2;
 		} bytes;
-		uint16_t	value;
+		uint16_t value;
 	} tmp;
 
 	tmp.value = 0;
 	tmp.bytes.field1 = 1;
 
-	if (tmp.value == 0x0001) {
+	if (tmp.value == 0x0001)
+	{
 		fprintf(f, "#define MACH_BYTE_ORDER_LSB_FIRST\n");
-	} else if (tmp.value == 0x0100) {
+	}
+	else if (tmp.value == 0x0100)
+	{
 		fprintf(f, "#define MACH_BYTE_ORDER_MSB_FIRST\n");
-	} else {
+	}
+	else
+	{
 		fprintf(stderr, "cannot determine byte order\n");
 		exit(EXIT_FAILURE);
 	}
@@ -38,39 +45,46 @@ void byte_order(FILE *f)
 
 void bitfield_order(FILE *f)
 {
-	union {
-		struct {
-			unsigned int	field1 : 1;
-			unsigned int	dummys : 6;
-			unsigned int	field2 : 1;
+	union
+	{
+		struct
+		{
+			unsigned int field1 : 1;
+			unsigned int dummys : 6;
+			unsigned int field2 : 1;
 		} bits;
-		unsigned int		value;
+		unsigned int value;
 	} tmp;
 
 	tmp.value = 0;
 	tmp.bits.field1 = 1;
 
-	if (tmp.value == 1) {
+	if (tmp.value == 1)
+	{
 		fprintf(f, "#define MACH_BITFIELDS_LSB_FIRST\n");
-	} else {
+	}
+	else
+	{
 		fprintf(f, "#define MACH_BITFIELDS_MSB_FIRST\n");
 	}
 }
 
 int main(int argc, char *argv[])
 {
-	FILE		*f;
-	char		*path;
-	time_t		tp;
+	FILE *f;
+	char *path;
+	time_t tp;
 
-	if (argc != 2) {
+	if (argc != 2)
+	{
 		fprintf(stderr, "usage: machdep <outfile>\n");
 		return EXIT_FAILURE;
 	}
 	path = argv[1];
 
 	/* Open output stream */
-	if ((f = fopen(path, "w")) == NULL) {
+	if ((f = fopen(path, "w")) == NULL)
+	{
 		perror("fopen");
 		return EXIT_FAILURE;
 	}

@@ -18,7 +18,8 @@
 void USim::run()
 {
 	halted = false;
-	while (!halted) {
+	while (!halted)
+	{
 		tick();
 	}
 }
@@ -29,7 +30,8 @@ void USim::tick()
 	++cycles;
 
 	// update all active devices
-	for (auto& d : dev_active) {
+	for (auto &d : dev_active)
+	{
 		d.device->tick(cycles);
 	}
 
@@ -40,7 +42,8 @@ void USim::tick()
 void USim::reset()
 {
 	// reset all active devices
-	for (auto& d : dev_active) {
+	for (auto &d : dev_active)
+	{
 		d.device->reset();
 	}
 }
@@ -65,20 +68,20 @@ Byte USim::fetch()
 // Device handling
 //----------------------------------------------------------------------------
 
-void USim::attach(const ActiveDevice::shared_ptr& dev)
+void USim::attach(const ActiveDevice::shared_ptr &dev)
 {
-	dev_active.push_back({ dev });
+	dev_active.push_back({dev});
 }
 
-void USim::attach(const MappedDevice::shared_ptr& dev, Word base, Word mask, rank<0>)
+void USim::attach(const MappedDevice::shared_ptr &dev, Word base, Word mask, rank<0>)
 {
-	dev_mapped.push_back({ dev, base, mask });
+	dev_mapped.push_back({dev, base, mask});
 }
 
-void USim::attach(const ActiveMappedDevice::shared_ptr& dev, Word base, Word mask, rank<1>)
+void USim::attach(const ActiveMappedDevice::shared_ptr &dev, Word base, Word mask, rank<1>)
 {
-	dev_active.push_back({ dev });
-	dev_mapped.push_back({ dev, base, mask });
+	dev_active.push_back({dev});
+	dev_mapped.push_back({dev, base, mask});
 }
 
 //----------------------------------------------------------------------------
@@ -89,13 +92,17 @@ void USim::attach(const ActiveMappedDevice::shared_ptr& dev, Word base, Word mas
 Byte USim::read(Word offset)
 {
 	++cycles;
-	for (auto& d : dev_mapped) {
-		if ( false ) {
+	for (auto &d : dev_mapped)
+	{
+		if (false)
+		{
 			printf("read() -> offset = %4.4x mask = %4.4x base = %4.4x\n", offset, d.mask, d.base);
 		}
-		if ((offset & d.mask) == d.base) {
-			if ( false ) {
-				printf(" ok (%2.2x at %4.4x)!\n", d.device->read(offset - d.base), offset - d.base );
+		if ((offset & d.mask) == d.base)
+		{
+			if (false)
+			{
+				printf(" ok (%2.2x at %4.4x)!\n", d.device->read(offset - d.base), offset - d.base);
 			}
 			return d.device->read(offset - d.base);
 		}
@@ -107,12 +114,16 @@ Byte USim::read(Word offset)
 void USim::write(Word offset, Byte val)
 {
 	++cycles;
-	for (auto& d : dev_mapped) {
-		if ( offset == 0x5022 ) {
+	for (auto &d : dev_mapped)
+	{
+		if (offset == 0x5022)
+		{
 			printf("write(%2.2x) -> offset = %4.4x mask = %4.4x base = %4.4x\n", val, offset, d.mask, d.base);
 		}
-		if ((offset & d.mask) == d.base) {
-			if ( offset == 0x5022 ) {
+		if ((offset & d.mask) == d.base)
+		{
+			if (offset == 0x5022)
+			{
 				printf(" ok at %4.4x!\n", offset - d.base);
 				// std::raise(SIGINT);
 				throw "Exception";
@@ -129,9 +140,9 @@ void USim::write(Word offset, Byte val)
 
 Word USimMotorola::fetch_word()
 {
-	Word		tmp;
+	Word tmp;
 
-	tmp  = fetch() << 8;
+	tmp = fetch() << 8;
 	tmp |= fetch();
 
 	return tmp;
@@ -139,9 +150,9 @@ Word USimMotorola::fetch_word()
 
 Word USimMotorola::read_word(Word offset)
 {
-	Word		tmp;
+	Word tmp;
 
-	tmp  = read(offset++) << 8;
+	tmp = read(offset++) << 8;
 	tmp |= read(offset);
 
 	return tmp;
@@ -159,9 +170,9 @@ void USimMotorola::write_word(Word offset, Word val)
 
 Word USimIntel::fetch_word()
 {
-	Word		tmp;
+	Word tmp;
 
-	tmp  = fetch();
+	tmp = fetch();
 	tmp |= fetch() << 8;
 
 	return tmp;
@@ -169,7 +180,7 @@ Word USimIntel::fetch_word()
 
 Word USimIntel::read_word(Word offset)
 {
-	Word		tmp;
+	Word tmp;
 
 	tmp = read(offset++);
 	tmp |= (read(offset) << 8);

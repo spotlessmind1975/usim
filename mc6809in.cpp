@@ -13,23 +13,23 @@
 
 //-- helper functions
 
-void mc6809::help_adc(Byte& x)
+void mc6809::help_adc(Byte &x)
 {
-	Byte	m = fetch_operand();
+	Byte m = fetch_operand();
 
 	{
-		Byte	t = (x & 0x0f) + (m & 0x0f) + cc.bit.c;
-		cc.bit.h = btst(t, 4);		// Half carry
+		Byte t = (x & 0x0f) + (m & 0x0f) + cc.bit.c;
+		cc.bit.h = btst(t, 4); // Half carry
 	}
 
 	{
-		Byte	t = (x & 0x7f) + (m & 0x7f) + cc.bit.c;
-		cc.bit.v = btst(t, 7);		// Bit 7 carry in
+		Byte t = (x & 0x7f) + (m & 0x7f) + cc.bit.c;
+		cc.bit.v = btst(t, 7); // Bit 7 carry in
 	}
 
 	{
-		Word	t = x + m + cc.bit.c;
-		cc.bit.c = btst(t, 8);		// Bit 7 carry out
+		Word t = x + m + cc.bit.c;
+		cc.bit.c = btst(t, 8); // Bit 7 carry out
 		x = t & 0xff;
 	}
 
@@ -38,23 +38,23 @@ void mc6809::help_adc(Byte& x)
 	cc.bit.z = !x;
 }
 
-void mc6809::help_add(Byte& x)
+void mc6809::help_add(Byte &x)
 {
-	Byte	m = fetch_operand();
+	Byte m = fetch_operand();
 
 	{
-		Byte	t = (x & 0x0f) + (m & 0x0f);
-		cc.bit.h = btst(t, 4);		// Half carry
+		Byte t = (x & 0x0f) + (m & 0x0f);
+		cc.bit.h = btst(t, 4); // Half carry
 	}
 
 	{
-		Byte	t = (x & 0x7f) + (m & 0x7f);
-		cc.bit.v = btst(t, 7);		// Bit 7 carry in
+		Byte t = (x & 0x7f) + (m & 0x7f);
+		cc.bit.v = btst(t, 7); // Bit 7 carry in
 	}
 
 	{
-		Word	t = x + m;
-		cc.bit.c = btst(t, 8);		// Bit 7 carry out
+		Word t = x + m;
+		cc.bit.c = btst(t, 8); // Bit 7 carry out
 		x = t & 0xff;
 	}
 
@@ -63,7 +63,7 @@ void mc6809::help_add(Byte& x)
 	cc.bit.z = !x;
 }
 
-void mc6809::help_and(Byte& x)
+void mc6809::help_and(Byte &x)
 {
 	x = x & fetch_operand();
 	cc.bit.n = btst(x, 7);
@@ -71,11 +71,12 @@ void mc6809::help_and(Byte& x)
 	cc.bit.v = 0;
 }
 
-void mc6809::help_asr(Byte& x)
+void mc6809::help_asr(Byte &x)
 {
 	cc.bit.c = btst(x, 0);
-	x >>= 1;	/* Shift word right */
-	if ((cc.bit.n = btst(x, 6)) != 0) {
+	x >>= 1; /* Shift word right */
+	if ((cc.bit.n = btst(x, 6)) != 0)
+	{
 		bset(x, 7);
 	}
 	cc.bit.z = !x;
@@ -90,7 +91,7 @@ void mc6809::help_bit(Byte x)
 	cc.bit.z = !t;
 }
 
-void mc6809::help_clr(Byte& x)
+void mc6809::help_clr(Byte &x)
 {
 	cc.all &= 0xf0;
 	cc.all |= 0x04;
@@ -100,8 +101,8 @@ void mc6809::help_clr(Byte& x)
 
 void mc6809::help_cmp(Byte x)
 {
-	Byte	m = fetch_operand();
-	int	t = x - m;
+	Byte m = fetch_operand();
+	int t = x - m;
 
 	cc.bit.v = btst((Byte)(x ^ m ^ t ^ (t >> 1)), 7);
 	cc.bit.c = btst((Word)t, 8);
@@ -111,8 +112,8 @@ void mc6809::help_cmp(Byte x)
 
 void mc6809::help_cmp(Word x)
 {
-	Word	m = fetch_word_operand();
-	long	t = x - m;
+	Word m = fetch_word_operand();
+	long t = x - m;
 
 	cc.bit.v = btst((DWord)(x ^ m ^ t ^ (t >> 1)), 15);
 	cc.bit.c = btst((DWord)t, 16);
@@ -121,7 +122,7 @@ void mc6809::help_cmp(Word x)
 	++cycles;
 }
 
-void mc6809::help_com(Byte& x)
+void mc6809::help_com(Byte &x)
 {
 	x = ~x;
 	cc.bit.c = 1;
@@ -131,7 +132,7 @@ void mc6809::help_com(Byte& x)
 	++cycles;
 }
 
-void mc6809::help_dec(Byte& x)
+void mc6809::help_dec(Byte &x)
 {
 	cc.bit.v = (x == 0x80);
 	x = x - 1;
@@ -140,7 +141,7 @@ void mc6809::help_dec(Byte& x)
 	++cycles;
 }
 
-void mc6809::help_eor(Byte& x)
+void mc6809::help_eor(Byte &x)
 {
 	x = x ^ fetch_operand();
 	cc.bit.v = 0;
@@ -148,7 +149,7 @@ void mc6809::help_eor(Byte& x)
 	cc.bit.z = !x;
 }
 
-void mc6809::help_inc(Byte& x)
+void mc6809::help_inc(Byte &x)
 {
 	cc.bit.v = (x == 0x7f);
 	x = x + 1;
@@ -157,7 +158,7 @@ void mc6809::help_inc(Byte& x)
 	++cycles;
 }
 
-void mc6809::help_ld(Byte& x)
+void mc6809::help_ld(Byte &x)
 {
 	x = fetch_operand();
 	cc.bit.n = btst(x, 7);
@@ -165,7 +166,7 @@ void mc6809::help_ld(Byte& x)
 	cc.bit.z = !x;
 }
 
-void mc6809::help_ld(Word& x)
+void mc6809::help_ld(Word &x)
 {
 	x = fetch_word_operand();
 	cc.bit.n = btst(x, 15);
@@ -173,7 +174,7 @@ void mc6809::help_ld(Word& x)
 	cc.bit.z = !x;
 }
 
-void mc6809::help_lsl(Byte& x)
+void mc6809::help_lsl(Byte &x)
 {
 	cc.bit.c = btst(x, 7);
 	cc.bit.v = btst(x, 7) ^ btst(x, 6);
@@ -183,18 +184,18 @@ void mc6809::help_lsl(Byte& x)
 	++cycles;
 }
 
-void mc6809::help_lsr(Byte& x)
+void mc6809::help_lsr(Byte &x)
 {
 	cc.bit.c = btst(x, 0);
-	x >>= 1;	/* Shift word right */
+	x >>= 1; /* Shift word right */
 	cc.bit.n = 0;
 	cc.bit.z = !x;
 	++cycles;
 }
 
-void mc6809::help_neg(Byte& x)
+void mc6809::help_neg(Byte &x)
 {
-	int	t = 0 - x;
+	int t = 0 - x;
 
 	cc.bit.v = btst((Byte)(x ^ t ^ (t >> 1)), 7);
 	cc.bit.c = btst((Word)t, 8);
@@ -204,7 +205,7 @@ void mc6809::help_neg(Byte& x)
 	++cycles;
 }
 
-void mc6809::help_or(Byte& x)
+void mc6809::help_or(Byte &x)
 {
 	x = x | fetch_operand();
 	cc.bit.v = 0;
@@ -212,56 +213,74 @@ void mc6809::help_or(Byte& x)
 	cc.bit.z = !x;
 }
 
-void mc6809::help_psh(Byte w, Word& s, Word& u)
+void mc6809::help_psh(Byte w, Word &s, Word &u)
 {
-	if (btst(w, 7)) do_psh(s, pc);
-	if (btst(w, 6)) do_psh(s, u);
-	if (btst(w, 5)) do_psh(s, y);
-	if (btst(w, 4)) do_psh(s, x);
-	if (btst(w, 3)) do_psh(s, dp);
-	if (btst(w, 2)) do_psh(s, b);
-	if (btst(w, 1)) do_psh(s, a);
-	if (btst(w, 0)) do_psh(s, cc.all);
+	if (btst(w, 7))
+		do_psh(s, pc);
+	if (btst(w, 6))
+		do_psh(s, u);
+	if (btst(w, 5))
+		do_psh(s, y);
+	if (btst(w, 4))
+		do_psh(s, x);
+	if (btst(w, 3))
+		do_psh(s, dp);
+	if (btst(w, 2))
+		do_psh(s, b);
+	if (btst(w, 1))
+		do_psh(s, a);
+	if (btst(w, 0))
+		do_psh(s, cc.all);
 }
 
-void mc6809::help_pul(Byte w, Word& s, Word& u)
+void mc6809::help_pul(Byte w, Word &s, Word &u)
 {
-	if (btst(w, 0)) do_pul(s, cc.all);
-	if (btst(w, 1)) do_pul(s, a);
-	if (btst(w, 2)) do_pul(s, b);
-	if (btst(w, 3)) do_pul(s, dp);
-	if (btst(w, 4)) do_pul(s, x);
-	if (btst(w, 5)) do_pul(s, y);
-	if (btst(w, 6)) do_pul(s, u);
-	if (btst(w, 7)) do_pul(s, pc);
+	if (btst(w, 0))
+		do_pul(s, cc.all);
+	if (btst(w, 1))
+		do_pul(s, a);
+	if (btst(w, 2))
+		do_pul(s, b);
+	if (btst(w, 3))
+		do_pul(s, dp);
+	if (btst(w, 4))
+		do_pul(s, x);
+	if (btst(w, 5))
+		do_pul(s, y);
+	if (btst(w, 6))
+		do_pul(s, u);
+	if (btst(w, 7))
+		do_pul(s, pc);
 }
 
-void mc6809::help_rol(Byte& x)
+void mc6809::help_rol(Byte &x)
 {
-	int	oc = cc.bit.c;
+	int oc = cc.bit.c;
 	cc.bit.v = btst(x, 7) ^ btst(x, 6);
 	cc.bit.c = btst(x, 7);
 	x = x << 1;
-	if (oc) bset(x, 0);
+	if (oc)
+		bset(x, 0);
 	cc.bit.n = btst(x, 7);
 	cc.bit.z = !x;
 	++cycles;
 }
 
-void mc6809::help_ror(Byte& x)
+void mc6809::help_ror(Byte &x)
 {
-	int	oc = cc.bit.c;
+	int oc = cc.bit.c;
 	cc.bit.c = btst(x, 0);
 	x = x >> 1;
-	if (oc) bset(x, 7);
+	if (oc)
+		bset(x, 7);
 	cc.bit.n = btst(x, 7);
 	cc.bit.z = !x;
 	++cycles;
 }
 
-void mc6809::help_sbc(Byte& x)
+void mc6809::help_sbc(Byte &x)
 {
-	Byte    m = fetch_operand();
+	Byte m = fetch_operand();
 	int t = x - m - cc.bit.c;
 
 	cc.bit.v = btst((Byte)(x ^ m ^ t ^ (t >> 1)), 7);
@@ -273,7 +292,7 @@ void mc6809::help_sbc(Byte& x)
 
 void mc6809::help_st(Byte x)
 {
-	Word	addr = fetch_effective_address();
+	Word addr = fetch_effective_address();
 	write(addr, x);
 	cc.bit.v = 0;
 	cc.bit.n = btst(x, 7);
@@ -282,20 +301,20 @@ void mc6809::help_st(Byte x)
 
 void mc6809::help_st(Word x)
 {
-	Word	addr = fetch_effective_address();
+	Word addr = fetch_effective_address();
 	write_word(addr, x);
 	cc.bit.v = 0;
 	cc.bit.n = btst(x, 15);
 	cc.bit.z = !x;
 }
 
-void mc6809::help_sub(Byte& x)
+void mc6809::help_sub(Byte &x)
 {
-	Byte    m = fetch_operand();
+	Byte m = fetch_operand();
 	int t = x - m;
 
-	cc.bit.v = btst((Byte)(x^m^t^(t>>1)),7);
-	cc.bit.c = btst((Word)t,8);
+	cc.bit.v = btst((Byte)(x ^ m ^ t ^ (t >> 1)), 7);
+	cc.bit.c = btst((Word)t, 8);
 	cc.bit.n = btst((Byte)t, 7);
 	x = t & 0xff;
 	cc.bit.z = !x;
@@ -345,15 +364,15 @@ void mc6809::addb()
 void mc6809::addd()
 {
 	insn = "ADDD";
-	Word	m = fetch_word_operand();
+	Word m = fetch_word_operand();
 
 	{
-		Word	t = (d & 0x7fff) + (m & 0x7fff);
+		Word t = (d & 0x7fff) + (m & 0x7fff);
 		cc.bit.v = btst(t, 15);
 	}
 
 	{
-		DWord	t = (DWord)d + m;
+		DWord t = (DWord)d + m;
 		cc.bit.c = btst(t, 16);
 		d = (Word)(t & 0xffff);
 	}
@@ -398,8 +417,8 @@ void mc6809::asrb()
 void mc6809::asr()
 {
 	insn = "ASR";
-	Word	addr = fetch_effective_address();
-	Byte	m = read(addr);
+	Word addr = fetch_effective_address();
+	Byte m = read(addr);
 
 	help_asr(m);
 	write(addr, m);
@@ -588,7 +607,7 @@ void mc6809::lbrn()
 void mc6809::bsr()
 {
 	insn = "BSR";
-	Byte	x = fetch_operand();
+	Byte x = fetch_operand();
 	do_psh(s, pc);
 	pc += extend8(x);
 	cycles += 3;
@@ -597,7 +616,7 @@ void mc6809::bsr()
 void mc6809::lbsr()
 {
 	insn = "LBSR";
-	Word	x = fetch_word_operand();
+	Word x = fetch_word_operand();
 	do_psh(s, pc);
 	pc += x;
 	cycles += 4;
@@ -642,8 +661,8 @@ void mc6809::clrb()
 void mc6809::clr()
 {
 	insn = "CLR";
-	Word	addr = fetch_effective_address();
-	Byte	m = read(addr);
+	Word addr = fetch_effective_address();
+	Byte m = read(addr);
 	help_clr(m);
 	write(addr, m);
 }
@@ -693,7 +712,7 @@ void mc6809::cmps()
 void mc6809::cwai()
 {
 	insn = "CWAI";
-	Byte	n = fetch_operand();
+	Byte n = fetch_operand();
 	cc.all &= n;
 	cc.bit.e = 1;
 	help_psh(0xff, s, u);
@@ -716,8 +735,8 @@ void mc6809::comb()
 void mc6809::com()
 {
 	insn = "COM";
-	Word	addr = fetch_effective_address();
-	Byte	m = read(addr);
+	Word addr = fetch_effective_address();
+	Byte m = read(addr);
 	help_com(m);
 	write(addr, m);
 }
@@ -725,22 +744,24 @@ void mc6809::com()
 void mc6809::daa()
 {
 	insn = "DAA";
-	Byte	c = 0;
-	Byte	lsn = (a & 0x0f);
-	Byte	msn = (a & 0xf0) >> 4;
+	Byte c = 0;
+	Byte lsn = (a & 0x0f);
+	Byte msn = (a & 0xf0) >> 4;
 
-	if (cc.bit.h || (lsn > 9)) {
+	if (cc.bit.h || (lsn > 9))
+	{
 		c |= 0x06;
 	}
 
 	if (cc.bit.c ||
-	    (msn > 9) ||
-	    ((msn > 8) && (lsn > 9))) {
+		(msn > 9) ||
+		((msn > 8) && (lsn > 9)))
+	{
 		c |= 0x60;
 	}
 
 	{
-		Word	t = (Word)a + c;
+		Word t = (Word)a + c;
 		cc.bit.c |= btst(t, 8);
 		a = (Byte)t;
 	}
@@ -765,8 +786,8 @@ void mc6809::decb()
 void mc6809::dec()
 {
 	insn = "DEC";
-	Word	addr = fetch_effective_address();
-	Byte	m = read(addr);
+	Word addr = fetch_effective_address();
+	Byte m = read(addr);
 	help_dec(m);
 	write(addr, m);
 }
@@ -790,11 +811,16 @@ void mc6809::exg()
 	int r1 = (w & 0xf0) >> 4;
 	int r2 = (w & 0x0f) >> 0;
 
-	if (r1 <= 5 && r2 <= 5) {
+	if (r1 <= 5 && r2 <= 5)
+	{
 		std::swap(wordrefreg(r2), wordrefreg(r1));
-	} else if (r1 >= 8 && r1 <= 11 && r2 >= 8 && r2 <= 11) {
+	}
+	else if (r1 >= 8 && r1 <= 11 && r2 >= 8 && r2 <= 11)
+	{
 		std::swap(byterefreg(r2), byterefreg(r1));
-	} else {
+	}
+	else
+	{
 		invalid("invalid EXG operand");
 	}
 
@@ -816,8 +842,8 @@ void mc6809::incb()
 void mc6809::inc()
 {
 	insn = "INC";
-	Word	addr = fetch_effective_address();
-	Byte	m = read(addr);
+	Word addr = fetch_effective_address();
+	Byte m = read(addr);
 	help_inc(m);
 	write(addr, m);
 }
@@ -831,7 +857,7 @@ void mc6809::jmp()
 void mc6809::jsr()
 {
 	insn = "JSR";
-	Word	addr = fetch_effective_address();
+	Word addr = fetch_effective_address();
 	do_psh(s, pc);
 	pc = addr;
 	cycles += 2;
@@ -924,8 +950,8 @@ void mc6809::lslb()
 void mc6809::lsl()
 {
 	insn = "LSL";
-	Word	addr = fetch_effective_address();
-	Byte	m = read(addr);
+	Word addr = fetch_effective_address();
+	Byte m = read(addr);
 	help_lsl(m);
 	write(addr, m);
 }
@@ -945,8 +971,8 @@ void mc6809::lsrb()
 void mc6809::lsr()
 {
 	insn = "LSR";
-	Word	addr = fetch_effective_address();
-	Byte	m = read(addr);
+	Word addr = fetch_effective_address();
+	Byte m = read(addr);
 	help_lsr(m);
 	write(addr, m);
 }
@@ -975,8 +1001,8 @@ void mc6809::negb()
 void mc6809::neg()
 {
 	insn = "NEG";
-	Word 	addr = fetch_effective_address();
-	Byte	m = read(addr);
+	Word addr = fetch_effective_address();
+	Byte m = read(addr);
 	help_neg(m);
 	write(addr, m);
 }
@@ -1053,8 +1079,8 @@ void mc6809::rolb()
 void mc6809::rol()
 {
 	insn = "ROL";
-	Word	addr = fetch_effective_address();
-	Byte	m = read(addr);
+	Word addr = fetch_effective_address();
+	Byte m = read(addr);
 	help_rol(m);
 	write(addr, m);
 }
@@ -1074,8 +1100,8 @@ void mc6809::rorb()
 void mc6809::ror()
 {
 	insn = "ROR";
-	Word	addr = fetch_effective_address();
-	Byte	m = read(addr);
+	Word addr = fetch_effective_address();
+	Byte m = read(addr);
 	help_ror(m);
 	write(addr, m);
 }
@@ -1084,9 +1110,12 @@ void mc6809::rti()
 {
 	insn = "RTI";
 	help_pul(0x01, s, u);
-	if (cc.bit.e) {
+	if (cc.bit.e)
+	{
 		help_pul(0xfe, s, u);
-	} else {
+	}
+	else
+	{
 		help_pul(0x80, s, u);
 	}
 	cycles += 2;
@@ -1177,10 +1206,10 @@ void mc6809::subb()
 void mc6809::subd()
 {
 	insn = "SUBD";
-	Word    m = fetch_word_operand();
+	Word m = fetch_word_operand();
 	int t = d - m;
 
-	cc.bit.v = btst((DWord)(d ^ m ^ t ^(t >> 1)), 15);
+	cc.bit.v = btst((DWord)(d ^ m ^ t ^ (t >> 1)), 15);
 	cc.bit.c = btst((DWord)t, 16);
 	cc.bit.n = btst((DWord)t, 15);
 	d = t & 0xffff;
@@ -1225,15 +1254,20 @@ void mc6809::sync()
 void mc6809::tfr()
 {
 	insn = "TFR";
-	Byte	w = fetch_operand();
+	Byte w = fetch_operand();
 	int r1 = (w & 0xf0) >> 4;
 	int r2 = (w & 0x0f) >> 0;
 
-	if (r1 <= 5 && r2 <= 5) {
+	if (r1 <= 5 && r2 <= 5)
+	{
 		wordrefreg(r2) = wordrefreg(r1);
-	} else if (r1 >= 8 && r1 <= 11 && r2 >= 8 && r2 <= 11) {
+	}
+	else if (r1 >= 8 && r1 <= 11 && r2 >= 8 && r2 <= 11)
+	{
 		byterefreg(r2) = byterefreg(r1);
-	} else {
+	}
+	else
+	{
 		invalid("invalid TFR operand");
 	}
 
@@ -1255,8 +1289,8 @@ void mc6809::tstb()
 void mc6809::tst()
 {
 	insn = "TST";
-	Word	addr = fetch_effective_address();
-	Byte	m = read(addr);
+	Word addr = fetch_effective_address();
+	Byte m = read(addr);
 	help_tst(m);
 	++cycles;
 }
