@@ -17,7 +17,7 @@
 
 #include <cstdio>
 #include <unistd.h>
-#include <ncurses.h>
+// #include <ncurses.h>
 // #include <termios.h>
 #include <sys/select.h>
 #include <sys/types.h>
