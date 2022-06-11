@@ -12,6 +12,10 @@
 #include "mc6850.h"
 #include "memory.h"
 
+#include <string.h>
+#include <assert.h>
+#include <stdlib.h>
+
 int is_done;
 int stop_address;
 int org_address;
@@ -181,7 +185,7 @@ static int doListing(int argc, char **argv) /* -i file */
 		listing_lines[pc] = lastLine;
 
 		listing_instructions[pc][strlen(listing_instructions[pc])-1] = 0;
-		
+
 	}
 	fclose(handle);
 	return 1;
