@@ -11,7 +11,7 @@
 #include "typedefs.h"
 
 #ifdef _POSIX_SOURCE
-#include <termios.h>
+// #include <termios.h>
 #endif
 
 class Terminal
@@ -20,7 +20,7 @@ class Terminal
 #ifdef _POSIX_SOURCE
 	FILE *input, *output;
 	int input_fd;
-	struct termios oattr, nattr;
+// 	struct termios oattr, nattr;
 #endif // _POSIX_SOURCE
 
 public:
