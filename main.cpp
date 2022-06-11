@@ -136,7 +136,16 @@ static int doListing(int argc, char **argv) /* -i file */
 	{
 		char line[256];
 		(void)!fgets(line, 256, handle);
-		char *sp = strchr(line, ' ');
+
+		char *sp = strstr(line, "; L");
+
+		if (sp != NULL)
+		{
+			sp += 4;
+			lastLine = atoi(sp);
+		}
+
+		sp = strchr(line, ' ');
 		if (!sp)
 			continue;
 		if ((sp - line) > 16)
@@ -168,16 +177,11 @@ static int doListing(int argc, char **argv) /* -i file */
 		if (strlen(instructions) == 0)
 			continue;
 
-		sp = strstr(line, "; L");
-
-		if (sp != NULL)
-		{
-			sp += 4;
-			lastLine = atoi(sp);
-		}
-
 		listing_instructions[pc] = strdup(instructions);
 		listing_lines[pc] = lastLine;
+
+		listing_instructions[pc][strlen(listing_instructions[pc])-1] = 0;
+		
 	}
 	fclose(handle);
 	return 1;
