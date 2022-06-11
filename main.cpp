@@ -16,6 +16,21 @@
 #include <assert.h>
 #include <stdlib.h>
 
+#ifdef _WIN32
+char *strdup(const char *s)
+{
+	size_t slen = strlen(s);
+	char *result = malloc(slen + 1);
+	if (result == NULL)
+	{
+		return NULL;
+	}
+
+	memcpy(result, s, slen + 1);
+	return result;
+}
+#endif
+
 int is_done;
 int stop_address;
 int org_address;
@@ -184,8 +199,7 @@ static int doListing(int argc, char **argv) /* -i file */
 		listing_instructions[pc] = strdup(instructions);
 		listing_lines[pc] = lastLine;
 
-		listing_instructions[pc][strlen(listing_instructions[pc])-1] = 0;
-
+		listing_instructions[pc][strlen(listing_instructions[pc]) - 1] = 0;
 	}
 	fclose(handle);
 	return 1;
