@@ -38,6 +38,11 @@ void mc6809::reset(Word _pc, Word _trap)
 	nmi_previous = true;  /* no NMI present */
 }
 
+extern char *profile_filename;
+extern int profile_cycles;
+extern int profile_heatmap[];
+extern int profile_heatmap_max;
+
 void mc6809::tick()
 {
 	// handle the attached devices
@@ -88,6 +93,18 @@ void mc6809::tick()
 
 	// remember current instruction address
 	insn_pc = pc;
+
+	++profile_heatmap[pc];
+	if (profile_heatmap_max < profile_heatmap[pc])
+		profile_heatmap_max = profile_heatmap[pc];
+	if (profile_filename)
+	{
+		--profile_cycles;
+		if (!profile_cycles)
+		{
+			return;
+		}
+	}
 
 	// hook
 	pre_exec();

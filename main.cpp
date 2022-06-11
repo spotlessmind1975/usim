@@ -24,6 +24,7 @@ int inspection_count;
 char *inspection_name[1024];
 int inspection_address[1024];
 int inspection_size[1024];
+bool binary = false;
 
 static unsigned long htol(char *hex)
 {
@@ -42,6 +43,7 @@ static void usage(int status)
 	FILE *stream = status ? stderr : stdout;
 	fprintf(stream, "usage: usim [option ...] <hexfile>\n");
 	fprintf(stream, "  -h                -- help (print this message)\n");
+	fprintf(stream, "  -b                -- load binary\n");
 	fprintf(stream, "  -l addr file      -- load file at addr\n");
 	fprintf(stream, "  -R addr           -- run from this address\n");
 	fprintf(stream, "  -X addr           -- terminate emulation if PC reaches addr\n");
@@ -120,7 +122,8 @@ static int doInspections(int argc, char **argv) /* -L file */
 	return 1;
 }
 
-char *listing_instructions[0x8000];
+char *listing_instructions[0xffff];
+int listing_lines[0xffff];
 
 static int doListing(int argc, char **argv) /* -i file */
 {
@@ -128,6 +131,7 @@ static int doListing(int argc, char **argv) /* -i file */
 		usage(1);
 	char *filename = argv[1];
 	FILE *handle = fopen(filename, "rt");
+	int lastLine = 0;
 	while (!feof(handle))
 	{
 		char line[256];
@@ -164,10 +168,39 @@ static int doListing(int argc, char **argv) /* -i file */
 		if (strlen(instructions) == 0)
 			continue;
 
+		sp = strstr(line, "; L");
+
+		if (sp != NULL)
+		{
+			sp += 4;
+			lastLine = atoi(sp);
+		}
+
 		listing_instructions[pc] = strdup(instructions);
+		listing_lines[pc] = lastLine;
 	}
 	fclose(handle);
 	return 1;
+}
+
+char *profile_filename;
+int profile_cycles;
+int profile_heatmap[0xffff];
+int profile_heatmap_max;
+
+static int doProfiling(int argc, char **argv) /* -p filename cycles */
+{
+	char *filename = NULL;
+	int cycles = 0;
+	if (argc < 2)
+		usage(1);
+	filename = argv[1];
+	cycles = atoi(argv[2]);
+	profile_filename = strdup(filename);
+	profile_cycles = cycles;
+	memset(profile_heatmap, 0, sizeof(int) * 0xffff);
+	profile_heatmap_max = 0;
+	return 2;
 }
 
 int main(int argc, char *argv[])
@@ -217,12 +250,18 @@ int main(int argc, char *argv[])
 			trap = htol(*(argv + 1));
 			n = 1;
 		}
+		else if (!strcmp(*argv, "-b"))
+		{
+			binary = true;
+		}
 		else if (!strcmp(*argv, "-t"))
 		{
 			trace = true;
 		}
 		else if (!strcmp(*argv, "-i"))
 			n = doListing(argc, argv);
+		else if (!strcmp(*argv, "-p"))
+			n = doProfiling(argc, argv);
 		else if ('-' == **argv)
 			usage(1);
 		else
@@ -247,13 +286,13 @@ int main(int argc, char *argv[])
 	cpu.FIRQ.bind([&]()
 				  { return acia->IRQ; });
 
-	if (loading_address)
+	if (binary)
 	{
 		ram->load_binary(input_filename, loading_address);
 	}
 	else
 	{
-		ram->load_intelhex(input_filename, 0x0000);
+		ram->load_intelhex(input_filename, loading_address);
 	}
 
 	cpu.reset(pc, trap);
@@ -263,6 +302,20 @@ int main(int argc, char *argv[])
 		cpu.tron(listing_instructions);
 	}
 	cpu.run();
+
+	if (profile_filename != NULL)
+	{
+		FILE *profile_heatmap_file = fopen(profile_filename, "wt+");
+		fprintf(profile_heatmap_file, "%4.4x %4.4x %4.4x PROFILING\n", profile_heatmap_max, 0, 0);
+		for (int i = 0; i < 0xffff; ++i)
+		{
+			if (listing_instructions[i])
+			{
+				fprintf(profile_heatmap_file, "%4.4x %4.4x %4.4x %s\n", profile_heatmap[i], i, listing_lines[i], listing_instructions[i]);
+			}
+		}
+		fclose(profile_heatmap_file);
+	}
 
 	if (output_filename)
 	{
