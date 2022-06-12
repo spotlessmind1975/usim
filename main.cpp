@@ -16,7 +16,6 @@
 #include <assert.h>
 #include <stdlib.h>
 
-#if defined(_WIN32) || defined(__MINGW32__) || defined(_WIN64) || defined(__MINGW64__)
 char *strdup(const char *s)
 {
 	size_t slen = strlen(s);
@@ -29,7 +28,6 @@ char *strdup(const char *s)
 	memcpy(result, s, slen + 1);
 	return result;
 }
-#endif
 
 int is_done;
 int stop_address;
