@@ -16,7 +16,7 @@
 #include <assert.h>
 #include <stdlib.h>
 
-#ifdef _WIN32
+#if defined(_WIN32) || defined(_WIN64)
 char *strdup(const char *s)
 {
 	size_t slen = strlen(s);
