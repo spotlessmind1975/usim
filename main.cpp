@@ -16,7 +16,7 @@
 #include <assert.h>
 #include <stdlib.h>
 
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(_WIN32) || defined(__MINGW32__) || defined(_WIN64) || defined(__MINGW64__)
 char *strdup(const char *s)
 {
 	size_t slen = strlen(s);
