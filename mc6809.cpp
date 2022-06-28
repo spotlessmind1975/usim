@@ -94,8 +94,6 @@ void mc6809::tick()
 	// remember current instruction address
 	insn_pc = pc;
 
-	printf("**** %s %d\n", profile_filename, profile_cycles);
-
 	++profile_heatmap[pc];
 	if (profile_heatmap_max < profile_heatmap[pc])
 		profile_heatmap_max = profile_heatmap[pc];

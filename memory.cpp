@@ -105,7 +105,7 @@ void GenericMemory::load_binary(const char *filename, Word base)
 
 		if (!feof(fp))
 		{
-			printf("%4.4x : %2.2x\n", addr, b);
+			// printf("%4.4x : %2.2x\n", addr, b);
 			memory[addr] = b;
 			++addr;
 		}
