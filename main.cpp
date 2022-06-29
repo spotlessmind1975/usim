@@ -232,7 +232,7 @@ int main(int argc, char *argv[])
 
 	Word loading_address = 0x0000;
 
-	const Word ram_size = 0xa000;
+	const Word ram_size = 0xb000;
 	Word rom_base = 0xe000;
 	const Word rom_size = 0x10000 - rom_base;
 	Word pc = 0x0000;
@@ -299,7 +299,7 @@ int main(int argc, char *argv[])
 	auto rom = std::make_shared<ROM>(rom_size);
 	auto acia = std::make_shared<mc6850>();
 
-	cpu.attach(ram, 0x0000, 0x6000);
+	cpu.attach(ram, 0x0000, (unsigned short)(~(ram_size - 1)));
 	cpu.attach(rom, rom_base, ~(rom_size - 1));
 	cpu.attach(acia, 0xc000, 0xfffe);
 
