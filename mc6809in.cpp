@@ -1224,6 +1224,7 @@ void mc6809::swi()
 	// cc.bit.f = cc.bit.i = 1;
 	// pc = read_word(0xfffa);
 	cycles += 4;
+	++pc;
 }
 
 void mc6809::swi2()
