@@ -299,7 +299,7 @@ int main(int argc, char *argv[])
 	auto rom = std::make_shared<ROM>(rom_size);
 	auto acia = std::make_shared<mc6850>();
 
-	cpu.attach(ram, 0x0000, (unsigned short)(~(ram_size - 1)));
+	cpu.attach(ram, 0x0000, 0x4000);
 	cpu.attach(rom, rom_base, ~(rom_size - 1));
 	cpu.attach(acia, 0xc000, 0xfffe);
 
