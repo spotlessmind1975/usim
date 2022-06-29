@@ -1219,10 +1219,10 @@ void mc6809::subd()
 void mc6809::swi()
 {
 	insn = "SWI";
-	cc.bit.e = 1;
-	help_psh(0xff, s, u);
-	cc.bit.f = cc.bit.i = 1;
-	pc = read_word(0xfffa);
+	// cc.bit.e = 1;
+	// help_psh(0xff, s, u);
+	// cc.bit.f = cc.bit.i = 1;
+	// pc = read_word(0xfffa);
 	cycles += 4;
 }
 
