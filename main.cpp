@@ -232,7 +232,7 @@ int main(int argc, char *argv[])
 
 	Word loading_address = 0x0000;
 
-	const Word ram_size = 0x8000;
+	const Word ram_size = 0xa000;
 	Word rom_base = 0xe000;
 	const Word rom_size = 0x10000 - rom_base;
 	Word pc = 0x0000;
