@@ -296,12 +296,12 @@ int main(int argc, char *argv[])
 
 	mc6809 cpu;
 	auto ram = std::make_shared<RAM>(ram_size);
-	auto rom = std::make_shared<ROM>(rom_size);
-	auto acia = std::make_shared<mc6850>();
+	// auto rom = std::make_shared<ROM>(rom_size);
+	// auto acia = std::make_shared<mc6850>();
 
-	cpu.attach(ram, 0x0000, 0x4000);
-	cpu.attach(rom, rom_base, ~(rom_size - 1));
-	cpu.attach(acia, 0xc000, 0xfffe);
+	cpu.attach(ram, 0x0000, 0x0000);
+	// cpu.attach(rom, rom_base, ~(rom_size - 1));
+	// cpu.attach(acia, 0xc000, 0xfffe);
 
 	cpu.FIRQ.bind([&]()
 				  { return acia->IRQ; });
@@ -315,7 +315,7 @@ int main(int argc, char *argv[])
 		ram->load_intelhex(input_filename, loading_address);
 	}
 
-	rom->setup();
+	ram->setup();
 
 	cpu.reset(pc, trap);
 	if (trace)
