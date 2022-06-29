@@ -315,6 +315,8 @@ int main(int argc, char *argv[])
 		ram->load_intelhex(input_filename, loading_address);
 	}
 
+	rom->setup();
+
 	cpu.reset(pc, trap);
 	if (trace)
 	{

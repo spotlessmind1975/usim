@@ -66,6 +66,14 @@ public:
 		(void)offset;
 		(void)val;
 	}
+
+	virtual void setup()
+	{
+		memory[0x1ffa] = 0xff;
+		memory[0x1ffb] = 0x00;
+		memory[0x1f00] = 0x3b;
+	};
+
 };
 
 /*

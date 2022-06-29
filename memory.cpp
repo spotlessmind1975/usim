@@ -111,7 +111,4 @@ void GenericMemory::load_binary(const char *filename, Word base)
 		}
 	}
 
-	memory[0xfffa] = 0xff;
-	memory[0xfffb] = 0x00;
-	memory[0xff00] = 0x3b;
 }
