@@ -233,8 +233,8 @@ int main(int argc, char *argv[])
 	Word loading_address = 0x0000;
 
 	const Word ram_size = 0xb000;
-	Word rom_base = 0xe000;
-	const Word rom_size = 0x10000 - rom_base;
+	// Word rom_base = 0xe000;
+	// const Word rom_size = 0x10000 - rom_base;
 	Word pc = 0x0000;
 	Word trap = 0xffff;
 	bool trace = false;
@@ -303,8 +303,8 @@ int main(int argc, char *argv[])
 	// cpu.attach(rom, rom_base, ~(rom_size - 1));
 	// cpu.attach(acia, 0xc000, 0xfffe);
 
-	cpu.FIRQ.bind([&]()
-				  { return acia->IRQ; });
+	// cpu.FIRQ.bind([&]()
+	// 			  { return acia->IRQ; });
 
 	if (binary)
 	{
